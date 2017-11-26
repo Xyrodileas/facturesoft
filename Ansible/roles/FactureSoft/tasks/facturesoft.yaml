@@ -1,0 +1,129 @@
+---
+  - name: Check for Go being installed
+    stat:
+      path: /usr/local/go
+    register: isGoInstalled
+
+  - debug: msg="GO is Installed"
+    when: isGoInstalled.stat.isdir is defined and isGoInstalled.stat.isdir
+
+  - debug: msg="GO is not Installed"
+    when: isGoInstalled.stat.isdir is not defined or not isGoInstalled.stat.isdir
+
+  - name: Unarchive Go
+    unarchive:
+      src: https://storage.googleapis.com/golang/go1.9.2.linux-amd64.tar.gz
+      dest: /usr/local
+      remote_src: yes
+    when: isGoInstalled.stat.isdir is not defined or not isGoInstalled.stat.isdir
+    become: yes
+
+  - name: Export Go Path
+    raw: "export PATH=$PATH:/usr/local/go/bin"
+
+  - name: Add /usr/local/go/bin to $PATH 
+    lineinfile:
+      path: /etc/profile
+      line: 'export PATH=$PATH:/usr/local/go/bin'
+    become: yes
+
+  - name: Add /var to $GOPATH 
+    lineinfile:
+      path: /etc/profile
+      line: 'export GOPATH=/var'
+    become: yes
+
+  - name: Reload source
+    raw: "source /etc/profile"
+
+  - name: Install git
+    become: true
+    apt:
+      name: git
+      state: latest
+
+  - name: Add dependency github.com/labstack/ech
+    command: "/usr/local/go/bin/go get github.com/labstack/echo"
+    environment:
+      GOPATH: "/var"
+    become: yes
+    become_flags: '-E'
+
+
+  - name: Add dependency  github.com/labstack/echo/middleware
+    command: "/usr/local/go/bin/go get github.com/labstack/echo/middleware"
+    environment:
+      GOPATH: "/var"
+    become: yes
+    become_flags: '-E'
+
+  - name: Add dependency gopkg.in/mgo.v2
+    command: "/usr/local/go/bin/go get gopkg.in/mgo.v2"
+    environment:
+      GOPATH: "/var"
+    become: yes
+    become_flags: '-E'
+
+  - name: Add dependency gopkg.in/mgo.v2/bson
+    command: "/usr/local/go/bin/go get gopkg.in/mgo.v2/bson"
+    environment:
+      GOPATH: "/var"
+    become: yes
+    become_flags: '-E'
+
+  - name: Copy facturesoft-restapi to /var
+    copy:
+      src: ../facturesoft-restapi
+      dest: /var/src
+    become: yes
+
+    # Starting Install Django
+  - name: Install Python3
+    become: true
+    package:
+      name: python3
+      state: latest
+
+  - name: Install pip
+    become: true
+    when: ansible_os_family ==  "Debian"
+    apt:
+      name: python3-pip
+      update_cache: true
+      state: latest
+
+  - name: Update pip
+    command: pip3 install --upgrade pip
+    become: true
+
+  - name: Configure pip3
+    raw: ln -s /usr/bin/pip3 /usr/bin/pip
+    become: true
+    ignore_errors: yes
+
+  - name: Install Django via pip
+    raw: pip install django
+    become: true
+
+  - name: Install request
+    raw: pip install requests
+    become: true
+
+  - name: Install boostrap via pip
+    raw: pip install django-bootstrap3
+    become: true
+
+  - name: Install screen
+    become: true
+    when: ansible_os_family ==  "Debian"
+    apt:
+      name: screen
+      update_cache: true
+      state: latest
+
+  - name: Copy facturesoft-frontend to /opt
+    copy:
+      src: ../facturesoft-frontend
+      dest: /opt/
+    become: yes
+

@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{% block title %}Hunting - ProcessTree{% endblock %}
+
+{% block bootstrap3_extra_head %}
+
+{% endblock %}
+
+
+{% block content %}
+  <style type="text/css">
+
+        #processes {
+          margin-left:15%;
+          margin-right:50%;
+        }
+
+
+
+    </style>
+
+<form action="" method="post" class="form" id="processes">
+  {% csrf_token %}
+  {% bootstrap_form form %}
+  {% buttons %}
+    <button type="submit" class="btn btn-primary">
+      {% bootstrap_icon "star" %} Submit
+    </button>
+  {% endbuttons %}
+</form>
+
+<div class="container">
+  <h2>Workstations</h2>
+         
+  <table class="table table-striped">
+    <thead>
+
+      <tr>
+        <th>idgrr</th>
+        <th>name</th>
+
+        <th>process</th>
+      </tr>
+    </thead>
+    <tbody>
+
+    {% for test in workstations %}
+      <tr>
+        <td>{{test}}</td>
+        <td>{{test}}</td>
+
+        <td><a href="/front/tree/{{test}}">here</a></td>
+        
+
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
+
+{% block bootstrap3_extra_script %}
+
+{% endblock %}

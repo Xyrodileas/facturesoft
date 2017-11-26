@@ -1,0 +1,33 @@
+---
+  - hosts: all
+    gather_facts: False
+    remote_user: ubuntu
+
+    pre_tasks:
+    - name: install python 2
+      raw: test -e /usr/bin/python || (sudo apt -y update && sudo apt install -y python-minimal)
+    - name: Gather Fact
+      setup: #Gather Fact
+
+    roles:
+    - ../roles/facturesoft
+
+    tasks:
+
+    - name: Create screen backend
+      command: screen -dmS backend
+      environment:
+        GOPATH: "/var"
+
+    - name: Start Go Server
+      command: screen -S backend -X stuff "sudo -E /usr/local/go/bin/go run /var/src/facturesoft-restapi/main.go\n"
+      environment:
+        GOPATH: "/var"
+
+    - name: Create Screen frontend
+      command: screen -dmS frontend 
+
+    - name: Start Django Server
+      command: screen -S frontend -X stuff "python3 /opt/facturesoft-frontend/manage.py runserver 0.0.0.0:8000\n"
+
+

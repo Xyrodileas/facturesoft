@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{% block title %}Hunting2{% endblock %}
+
+{% block bootstrap3_extra_head %}
+<link rel="stylesheet" href="{% static 'css/xx' %}">
+{% endblock %}
+
+{% block content %}
+	
+
+	<style type="text/css">
+        #mynetwork {
+            width: 1300px;
+            height: 600px;
+            border: 1px solid lightgray;
+        }
+    </style>
+
+	<div id="mynetwork"></div>
+
+<script type="text/javascript">
+    // create an array with nodes
+    var listpid = {{pid}}
+    var listppid = {{ppid}}
+    var listName = {{name|safe}}
+    var listTotal = [{}]
+    for (i = 0; i < listpid.length; i++) {
+    	if(listName[i] == "powershell.exe ") {
+    		listTotal.push({id:listpid[i], label:listName[i], color:'#FF0000'});
+    	}
+    	else if(listName[i] == "cmd.exe ") {
+    		listTotal.push({id:listpid[i], label:listName[i], color:'#FFa500'});
+    	}
+    	else {
+    		listTotal.push({id:listpid[i], label:listName[i]});
+    	}
+	}
+    var nodes = new vis.DataSet(listTotal);
+
+    var listEdge = [{}]
+    for (i = 0; i < listpid.length; i++) {
+	    listEdge.push({from:listpid[i], to:listppid[i]});
+	}
+
+    // create an array with edges
+    var edges = new vis.DataSet(listEdge);
+
+    // create a network
+    var container = document.getElementById('mynetwork');
+
+    // provide the data in the vis format
+    var data = {
+        nodes: nodes,
+        edges: edges
+    };
+    var options = {
+	    	edges: {
+	    		arrows: {
+				from: true,
+				},
+	    	},
+            layout: {
+            	randomSeed:2,
+            	improvedLayout:true,
+                hierarchical: {
+                    direction: 'DU',
+                    sortMethod: "directed",
+                    blockShifting: false,
+                    levelSeparation: 200,
+                    treeSpacing: 50,
+                    edgeMinimization: true,
+                    parentCentralization:true
+                }
+            },
+            physics:{
+            	enabled : false,
+            	barnesHut: {
+            		avoidOverlap: 10,
+            	}
+            },
+            };
+
+    // initialize your network!
+    var network = new vis.Network(container, data, options);
+</script>
+
+
+{% endblock %}
+
+{% block bootstrap3_extra_script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.18.0/vis.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.18.0/vis.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.18.0/vis.min.js"></script>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'bootstrap.html' %}
+
+{% load bootstrap3 %}
+{% load staticfiles %}
+{# Load CSS and JavaScript #}
+{% block bootstrap_css %}
+
+{% endblock %}
+{% block jsveforeboostrap %}
+
+
+{% endblock %}
+
+
+{% bootstrap_messages %}
+
+
+{% block bootstrap3_content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.18.0/vis.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.18.0/vis.min.css" rel="stylesheet">
+
+    <div class="navbar navbar-inverse navbar">
+        <div class="container-fluid">
+
+              <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{% url 'home' %}">Hunt'Evil</a>
+              </div>
+              <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                  <li class="active"><a href="{% url 'home' %}">Home</a></li>
+                  <li class="active"><a href="{% url 'tree' %}">Process Tree</a></li>
+                  <li class="active"><a href="{% url 'sockets' %}">Sockets</a></li>
+                  <li class="active"><a href="{% url 'upload_hunt' %}">Upload CSV</a></li>
+                  <li class="active"><a href="{% url 'entropy' %}">Entropy</a></li>
+                  <li class="active"><a href="{% url 'hashs' %}">Hashs</a></li>
+                  <li class="dropdown dropdown-submenu"><a href="persistence" class="dropdown-toggle" data-toggle="dropdown">Persistence</a>
+                    <ul class="dropdown-menu">
+                      <li><a href="#">Scheduled Task</a></li>
+                      <li><a href="#">RunKeys</a></li>
+                      <li><a href="#">WMI</a></li>
+                      <li><a href="#"> etc.<span class="badge">1,118</span></a></li>
+                    </ul>
+              </li>
+                </ul>
+              </div><!--/.nav-collapse -->
+            </div>
+        </div>
+
+
+
+        
+    <div class="row">
+{% block content %}(no content){% endblock %}
+    </div>
+
+
+{% endblock %}
+

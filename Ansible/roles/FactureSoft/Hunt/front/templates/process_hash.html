@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% load custom_dict %}
+{% block title %}Hunting2{% endblock %}
+
+{% block bootstrap3_extra_head %}
+<link rel="stylesheet" href="{% static 'css/changelog' %}">
+{% endblock %}
+
+{% block content %}
+  <style type="text/css">
+
+        #workstation {
+          margin-left:15%;
+          margin-right:50%;
+        }
+        .container {
+          margin-left:2%;
+          font:9px;
+        }
+
+
+</style>
+
+<form action="" method="post" class="form" id="workstation">
+  {% csrf_token %}
+  {% bootstrap_form form %}
+  {% buttons %}
+    <button type="submit" class="btn btn-primary">
+      {% bootstrap_icon "star" %} Submit
+    </button>
+  {% endbuttons %}
+</form>
+
+<div class="container">
+  <h2>Process & Hash</h2>
+         
+  <table class="table table-striped">
+    <thead>
+
+      <tr>
+        <th>Filename</th>
+        <th>Positive?</th>
+        <th>permalink</th>
+        <th>SHA256</th>
+      </tr>
+    </thead>
+    <tbody>
+
+    {% for hash in hashs%}
+      <tr>
+        <td>
+        {{ Occurency|get_item:hash.sha256 }}
+        {% for hashFile in hashOccurency|get_item:hash.sha256 %}
+          {% with hashFile.filename as filename %}
+          {{hashFile.filename}},{{hashFile.pathfile}},
+          {{ hashWorkstation|get_item:filename}}
+          {% endwith %}
+        {% endfor %}
+        </td>
+        <td>{{hash.positives}}
+        </td>
+        <td><a href="{{hash.permalink}}">VT Analysis</a></td>
+        <td>{{hash.sha256}}</td>
+        
+
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script type="text/javascript">
+function processForm(e) {
+    if (e.preventDefault) e.preventDefault();
+    var nameValue = document.getElementById("id_machine").value;
+    document.location.href = "/front/workstations?process=" + nameValue
+    return true;
+}
+
+var form = document.getElementById('workstation');
+if (form.attachEvent) {
+    form.attachEvent("submit", processForm);
+} else {
+    form.addEventListener("submit", processForm);
+}
+</script>
+
+{% endblock %}
+
+{% block bootstrap3_extra_script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.18.0/vis.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.18.0/vis.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.18.0/vis.min.js"></script>
+{% endblock %}

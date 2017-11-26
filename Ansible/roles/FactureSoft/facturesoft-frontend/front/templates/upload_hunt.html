@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{% block title %}Hunting2{% endblock %}
+
+{% block bootstrap3_extra_head %}
+
+{% endblock %}
+
+{% block content %}
+  <style type="text/css">
+  #SocketHunt, #ProcessHunt , #HashHunt
+  {
+    margin-left:10%;
+  }
+  </style>
+
+<form action="success" enctype="multipart/form-data" method="post" class="form" id="SocketHunt">
+  {% csrf_token %}
+  {% bootstrap_form SocketHunt %}
+  {% buttons %}
+    <button type="submit" class="btn btn-primary">
+      {% bootstrap_icon "star" %} Submit
+    </button>
+  {% endbuttons %}
+</form>
+
+<form action="success" enctype="multipart/form-data" method="post" class="form" id="ProcessHunt">
+  {% csrf_token %}
+  {% bootstrap_form ProcessHunt %}
+  {% buttons %}
+    <button type="submit" class="btn btn-primary">
+      {% bootstrap_icon "star" %} Submit
+    </button>
+  {% endbuttons %}
+</form>
+
+<form action="success" enctype="multipart/form-data" method="post" class="form" id="HashHunt">
+  {% csrf_token %}
+  {% bootstrap_form HashHunt %}
+  {% buttons %}
+    <button type="submit" class="btn btn-primary">
+      {% bootstrap_icon "star" %} Submit
+    </button>
+  {% endbuttons %}
+</form>
+
+<form action="success" enctype="multipart/form-data" method="post" class="form" id="RegistryHunt">
+  {% csrf_token %}
+  {% bootstrap_form RegistryHunt %}
+  {% buttons %}
+    <button type="submit" class="btn btn-primary">
+      {% bootstrap_icon "star" %} Submit
+    </button>
+  {% endbuttons %}
+</form>
+
+{% endblock %}
+
+{% block bootstrap3_extra_script %}
+
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% load custom_dict %}
+{% block title %}Hunting2{% endblock %}
+
+{% block bootstrap3_extra_head %}
+<link rel="stylesheet" href="{% static 'css/changelog' %}">
+{% endblock %}
+
+{% block content %}
+  <style type="text/css">
+
+        #workstation {
+          margin-left:15%;
+          margin-right:50%;
+        }
+
+
+
+    </style>
+
+
+
+<div class="container">
+  <h2>Workstations</h2>
+  
+<div class="row">
+  <div class="col">col</div>
+  <div class="col">col</div>
+  <div class="w-100"></div>
+  <div class="col">col</div>
+  <div class="col">col</div>
+</div>
+  <table class="table table-striped">
+    <thead>
+
+      <tr>
+        <th>name</th>
+        <th>Sockets</th>
+
+        <th>process</th>
+      </tr>
+    </thead>
+    <tbody>
+
+
+      <tr>
+        <td>{{workstation.name}}</td>
+        <td>
+        {% for socket in workstation.sockets %}
+            {% if socket.state == "LISTEN" %}
+                <font color="green">{{socket.port}}</font>,
+            {% elif socket.state == "ESTABLISH" %}
+                <font color="red">{{socket.port}}</font>
+            {% else %}
+                {{socket.port}}             
+            {% endif %}
+        {% endfor %}
+        </td>
+        <td><a href="/front/tree/{{workstation.idgrr}}">here</a></td>
+        
+
+      </tr>
+
+    </tbody>
+  </table>
+</div>
+
+
+
+{% endblock %}
+
+{% block bootstrap3_extra_script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.18.0/vis.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.18.0/vis.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.18.0/vis.min.js"></script>
+{% endblock %}
