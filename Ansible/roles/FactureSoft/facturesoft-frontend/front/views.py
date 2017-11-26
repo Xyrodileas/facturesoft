@@ -89,9 +89,9 @@ def postLogin(username, password):
     hashed = hashlib.sha256()
     hashed.update(password.encode('utf-8'))
     hexencoded = hashed.hexdigest()
-    r = requests.post('http://localhost:1323/login', auth=HTTPBasicAuth(username, hexencoded))
+    r = requests.get('http://localhost:1323/login', auth=HTTPBasicAuth(username, hexencoded))
     jsonResult = r.json()
-    print("Login request : " + jsonResult)
+    print("Login request : " + str(jsonResult))
     try:
         if jsonResult["name"] == username:
             return True
@@ -218,16 +218,16 @@ def signup(request):
             m.update(raw_password.encode('utf-8'))
             hashedpassword = m.hexdigest()
 
-            user = {"name": username, "password": hashedpassword, 'admin': False}
+            user = {"name": username, "password": hashedpassword, 'IsAdmin': False}
 
             r = requests.post('http://localhost:1323/user', auth=HTTPBasicAuth(authorized_username, authorized_password), json=user)
             jsonResult = r.json()
             print("Creation result : " + jsonResult)
 
             
-            template = loader.get_template('home.html')
+            template = loader.get_template('auth_success.html')
 
-            context = {'username': username, 'isAdmin': True}
+            context = {'username': username, isAdmin(request, username)}
             httpResponse = HttpResponse(template.render(context, request))
             set_cookie(httpResponse, 'username', username)
             set_cookie(httpResponse, 'admin', True)
@@ -237,7 +237,7 @@ def signup(request):
     return render(request, 'signup.html', {'form': form})
 
 # Page to log-on (sign-in)
-def signIn(request):
+def signin(request):
     class SignInForm(forms.Form):
         username = forms.CharField(label='Enter your name', required=True,max_length=100)
         password = forms.CharField(label='Password', required=True,max_length=100, widget=forms.PasswordInput())
@@ -252,11 +252,11 @@ def signIn(request):
             print("Auth result: " + str(result))
             if not result:
                 print("Err, bad username/password")
-                template = loader.get_template('home.html')
+                template = loader.get_template('auth_error.html')
                 context = {}
                 return HttpResponse(template.render(context, request))
 
-            template = loader.get_template('home.html')
+            template = loader.get_template('auth_success.html')
 
             context = {'username': username, 'admin': isAdmin(request, username)}
             httpResponse = HttpResponse(template.render(context, request))
@@ -265,7 +265,7 @@ def signIn(request):
             return httpResponse
     else:
         form = SignInForm()
-    return render(request, 'signIn.html', {'form': form})
+    return render(request, 'signin.html', {'form': form})
 
 # Helper for time, deprecated
 def timestamp_microsecond(utc_time):
