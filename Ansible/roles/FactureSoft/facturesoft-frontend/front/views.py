@@ -227,7 +227,7 @@ def signup(request):
             
             template = loader.get_template('auth_success.html')
 
-            context = {'username': username, isAdmin(request, username)}
+            context = {'username': username, 'admin':isAdmin(request, username)}
             httpResponse = HttpResponse(template.render(context, request))
             set_cookie(httpResponse, 'username', username)
             set_cookie(httpResponse, 'admin', True)
