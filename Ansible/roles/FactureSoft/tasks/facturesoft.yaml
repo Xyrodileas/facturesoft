@@ -112,6 +112,10 @@
   - name: Install boostrap via pip
     raw: pip install django-bootstrap3
     become: true
+    
+  - name: Install rfc3339
+    raw: pip install rfc3339
+    become: true
 
   - name: Install screen
     become: true

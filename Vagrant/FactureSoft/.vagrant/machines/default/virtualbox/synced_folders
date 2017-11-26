@@ -1,1 +1,1 @@
-{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"/Users/snow/Documents/Dev/DevOps/Vagrant/FactureSoft","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}
+{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"/Users/snow/Documents/Class/log515/facturesoft/Vagrant/FactureSoft","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}

@@ -28,12 +28,18 @@
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="{% url 'home' %}">FactureSoft</a>
+                {% if username == None %} <a class="navbar-brand" href="{% url 'home' %}">FactureSoft</a>/li>{% endif %}
+                {% if username != None %} <a class="navbar-brand" href="{% url 'home' %}">FactureSoft - {{ username }}</a></li>{% endif %}
+               
               </div>
               <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
                   <li class="active"><a href="{% url 'home' %}">Home</a></li>
-                  <li class="active"><a href="{% url 'signup' %}">SignUp</a></li>
+                  {% if username == None %}<li class="active"><a href="{% url 'signin' %}">Sign-In</a></li>{% endif %}
+                  {% if username == None %}<li class="active"><a href="{% url 'signup' %}">Sign-Up</a></li>{% endif %}
+                  {% if username != None %}<li class="active"><a href="{% url 'myAccount' %}">My Account</a></li>{% endif %}
+                  {% if username != None %}<li class="active"><a href="{% url 'addExpense' %}">Add Expense</a></li>{% endif %}
+                  {% if admin == True %}<li class="active"><a href="{% url 'approveExpenses' %}">Approve Expenses </a></li>{% endif %}
               </li>
                 </ul>
               </div><!--/.nav-collapse -->

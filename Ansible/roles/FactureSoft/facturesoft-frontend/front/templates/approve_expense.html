@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% load custom_dict %}
+{% block title %}Expenses{% endblock %}
+
+{% block bootstrap3_extra_head %}
+<link rel="stylesheet" href="{% static 'css/changelog' %}">
+{% endblock %}
+
+{% block content %}
+  <style type="text/css">
+
+        #workstation_search {
+          margin-left:15%;
+          margin-right:50%;
+        }
+
+
+
+    </style>
+
+
+<div class="container">
+  <h2>Approve Expenses</h2>
+         
+  <table class="table table-striped">
+    <thead>
+
+      <tr>
+        <th>Name</th>
+        <th>Amount</th>
+
+        <th>Status</th>
+        <th>date</th>
+        <th>Creator</th>
+        <th>Approve?</th>
+      </tr>
+    </thead>
+    <tbody>
+
+    {% for expense in expenses%}
+      <tr>
+        <td>{{expense.name}}</td>
+        <td>
+       <span class="badge">{{ expense.ammount }}</span>
+        </td>
+        <td>{{ expense.approved }}</td>
+        <td>{{ expense.date }}</td>
+        <td>{{ expense.user }}</td>
+        <td><a href="{% url 'approve' expense.id %}">Approve!</a></td>
+
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
+
+
+
+{% endblock %}
+
+{% block bootstrap3_extra_script %}
+
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% load custom_dict %}
+{% block title %}Expenses{% endblock %}
+
+{% block bootstrap3_extra_head %}
+<link rel="stylesheet" href="{% static 'css/changelog' %}">
+{% endblock %}
+
+{% block content %}
+  <style type="text/css">
+
+        #workstation_search {
+          margin-left:15%;
+          margin-right:50%;
+        }
+
+
+
+    </style>
+
+
+<div class="container">
+  <h2>Expense</h2>
+         
+  <table class="table table-striped">
+    <thead>
+
+      <tr>
+        <th>Name</th>
+        <th>Amount</th>
+
+        <th>Status</th>
+        <th>date</th>
+        <th>Approver</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <tr>
+        <td>{% if username != None %}<li class="active"><a href="{% url 'expense' %}/{{ expense.id }}">{{expense.name}}</a></li>{% endif %}</td>
+        <td>
+       <span class="badge">{{ expense.ammount }}</span>
+        </td>
+        <td>{{ expense.approved }}</td>
+        <td>{{ expense.date }}</td>
+        <td>{{ expense.user }}</td>
+      </tr>
+
+    </tbody>
+  </table>
+</div>
+
+<script type="text/javascript">
+function processForm(e) {
+    if (e.preventDefault) e.preventDefault();
+    var nameValue = document.getElementById("id_machine").value;
+    document.location.href = "/front?workstation_search=" + nameValue
+
+
+    return true;
+}
+
+var form = document.getElementById('workstation_search');
+if (form.attachEvent) {
+    form.attachEvent("submit", processForm);
+} else {
+    form.addEventListener("submit", processForm);
+}
+</script>
+
+{% endblock %}
+
+{% block bootstrap3_extra_script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.18.0/vis.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.18.0/vis.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.18.0/vis.min.js"></script>
+{% endblock %}
