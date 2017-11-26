@@ -91,6 +91,7 @@ def postLogin(username, password):
     hexencoded = hashed.hexdigest()
     r = requests.post('http://localhost:1323/login', auth=HTTPBasicAuth(username, hexencoded))
     jsonResult = r.json()
+    print("Login request : " + jsonResult)
     try:
         if jsonResult["name"] == username:
             return True
@@ -221,7 +222,7 @@ def signup(request):
 
             r = requests.post('http://localhost:1323/user', auth=HTTPBasicAuth(authorized_username, authorized_password), json=user)
             jsonResult = r.json()
-            print(jsonResult)
+            print("Creation result : " + jsonResult)
 
             
             template = loader.get_template('home.html')
@@ -248,6 +249,12 @@ def signIn(request):
             raw_password = form.cleaned_data.get('password')
 
             result = postLogin(username, raw_password)
+            print("Auth result: " + str(result))
+            if not result:
+                print("Err, bad username/password")
+                template = loader.get_template('home.html')
+                context = {}
+                return HttpResponse(template.render(context, request))
 
             template = loader.get_template('home.html')
 
