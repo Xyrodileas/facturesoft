@@ -117,6 +117,7 @@ def isAdmin(request, username):
         return False
     print("Not Admin")
     return False
+
 # main page when you hit /front
 def index(request):
     username = request.COOKIES.get('username') 
@@ -207,18 +208,20 @@ def myAccount(request):
 def signup(request):
     class SignupForm(forms.Form):
         username = forms.CharField(label='Enter your name', required=True, max_length=100)
+        email = forms.CharField(max_length=30, required=True, help_text='Optional.')
         password = forms.CharField(label='Password', required=True, max_length=100, widget=forms.PasswordInput())
 
     if request.method == 'POST':
         form = SignupForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
+            email = form.cleaned_data.get('email')
             raw_password = form.cleaned_data.get('password')
             m = hashlib.sha256()
             m.update(raw_password.encode('utf-8'))
             hashedpassword = m.hexdigest()
 
-            user = {"name": username, "password": hashedpassword, 'IsAdmin': False}
+            user = {"name": username, "email": email, "password": hashedpassword, 'IsAdmin': False}
 
             r = requests.post('http://localhost:1323/user', auth=HTTPBasicAuth(authorized_username, authorized_password), json=user)
             jsonResult = r.json()
@@ -227,9 +230,10 @@ def signup(request):
             
             template = loader.get_template('auth_success.html')
 
-            context = {'username': username, 'admin':isAdmin(request, username)}
+            context = {'username': username,'email':email, 'admin':isAdmin(request, username)}
             httpResponse = HttpResponse(template.render(context, request))
             set_cookie(httpResponse, 'username', username)
+            set_cookie(httpResponse, 'email', email)
             set_cookie(httpResponse, 'admin', True)
             return httpResponse
     else:
