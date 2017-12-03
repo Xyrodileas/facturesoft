@@ -39,8 +39,8 @@
                   {% if username == None %}<li class="active"><a href="{% url 'signin' %}">Sign-In</a></li>{% endif %}
                   {% if username == None %}<li class="active"><a href="{% url 'signup' %}">Sign-Up</a></li>{% endif %}
                   {% if username != None %}<li class="active"><a href="{% url 'myAccount' %}">My Account</a></li>{% endif %}
-                  {% if username != None %}<li class="active"><a href="{% url 'addExpense' %}">Add Expense</a></li>{% endif %}
-                  {% if admin == True %}<li class="active"><a href="{% url 'approveExpenses' %}">Approve Expenses </a></li>{% endif %}
+                  {% if username != None %}<li class="active"><a href="{% url 'addExpense' %}">Expense Module</a></li>{% endif %}
+                  {% if admin == True %}<li class="active"><a href="{% url 'approveExpenses' %}">Approval Module </a></li>{% endif %}
               </li>
                 </ul>
               </div><!--/.nav-collapse -->

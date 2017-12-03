@@ -9,18 +9,6 @@
 {% endblock %}
 
 {% block content %}
-  <style type="text/css">
-
-        #workstation_search {
-          margin-left:15%;
-          margin-right:50%;
-        }
-
-
-
-    </style>
-
-
 <div class="container">
   <h2>Expenses</h2>
          
@@ -31,8 +19,8 @@
         <th>Name</th>
         <th>Amount</th>
 
-        <th>Status</th>
-        <th>date</th>
+        <th>Approved</th>
+        <th>Date</th>
         <th>Approver</th>
       </tr>
     </thead>
@@ -42,7 +30,7 @@
       <tr>
         <td>{{expense.name}}</td>
         <td>
-       <span class="badge">{{ expense.ammount }}</span>
+       <span class="badge">{{ expense.amount }}</span>
         </td>
         <td>{{ expense.approved }}</td>
         <td>{{ expense.date }}</td>
@@ -58,8 +46,6 @@ function processForm(e) {
     if (e.preventDefault) e.preventDefault();
     var nameValue = document.getElementById("id_machine").value;
     document.location.href = "/front?workstation_search=" + nameValue
-
-
     return true;
 }
 

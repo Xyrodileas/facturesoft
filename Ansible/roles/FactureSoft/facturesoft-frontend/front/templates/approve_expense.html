@@ -9,20 +9,8 @@
 {% endblock %}
 
 {% block content %}
-  <style type="text/css">
-
-        #workstation_search {
-          margin-left:15%;
-          margin-right:50%;
-        }
-
-
-
-    </style>
-
-
 <div class="container">
-  <h2>Approve Expenses</h2>
+  <h2>Approval Module</h2>
          
   <table class="table table-striped">
     <thead>
@@ -31,10 +19,10 @@
         <th>Name</th>
         <th>Amount</th>
 
-        <th>Status</th>
+        <th>Approved</th>
         <th>date</th>
         <th>Creator</th>
-        <th>Approve?</th>
+        <th>Action</th>
       </tr>
     </thead>
     <tbody>
@@ -43,12 +31,12 @@
       <tr>
         <td>{{expense.name}}</td>
         <td>
-       <span class="badge">{{ expense.ammount }}</span>
+       <span class="badge">{{ expense.amount }}</span>
         </td>
         <td>{{ expense.approved }}</td>
         <td>{{ expense.date }}</td>
         <td>{{ expense.user }}</td>
-        <td><a href="{% url 'approve' expense.id %}">Approve!</a></td>
+        <td><a href="{% url 'approve' expense.id %}">Approve</a></td>
 
       </tr>
     {% endfor %}

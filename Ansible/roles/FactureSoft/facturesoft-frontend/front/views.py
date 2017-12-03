@@ -189,7 +189,8 @@ def expense(request, idExpense):
 
 # Page to manage account information, pretty empty right now
 def myAccount(request):
-    username = request.COOKIES.get('username') 
+    username = request.COOKIES.get('username')
+    email = request.COOKIES.get('email')
 
     # If no username, let's GTFO
     if not username:
@@ -284,8 +285,6 @@ def addExpense(request):
         amount = forms.CharField(label='Amount', required=True, max_length=100)
         date = forms.DateField(label='Date', required=True)
 
-    username = request.COOKIES.get('username') 
-
     if request.method == 'POST':
         form = AddExpenseForm(request.POST)
         if form.is_valid():
@@ -293,17 +292,12 @@ def addExpense(request):
             amount = form.cleaned_data.get('amount')
             date = form.cleaned_data.get('date')
             username = request.COOKIES.get('username')
-            #date = str(date.datetime.now())
-            #d = date.now().isoformat("T")
-            #print(d)
             d = date.today()
             import rfc3339
             returndate = datetime.combine(d, datetime.min.time())
             returndate = (rfc3339.rfc3339(returndate))
             print(returndate)
-            expense = {"user": username , "name": name, "ammount": int(amount), "date":returndate, "approved":False}
-            #expense = {"user": username , "name": name, "ammount": amount, "approved":False}
-            #date = 1511712133
+            expense = {"user": username , "name": name, "amount": int(amount), "date":returndate, "approved":False}
             r = requests.post('http://localhost:1323/user/'+ username + '/expense', auth=HTTPBasicAuth(authorized_username, authorized_password), json=expense)
 
             jsonResult = r.json()
@@ -357,7 +351,3 @@ def approve(request, idExpense):
         set_cookie(httpResponse, 'username', username)
         set_cookie(httpResponse, 'isAdmin', True)
         return httpResponse
-
-
-
-

@@ -7,22 +7,10 @@
 {% block bootstrap3_extra_head %}
 <link rel="stylesheet" href="{% static 'css/changelog' %}">
 {% endblock %}
-
 {% block content %}
-  <style type="text/css">
-
-        #workstation_search {
-          margin-left:15%;
-          margin-right:50%;
-        }
-
-
-
-    </style>
-
 
 <div class="container">
-  <h2>APPROVED EXPENSE</h2>
+  <h2>Approved Expenses</h2>
          
   <table class="table table-striped">
     <thead>
@@ -41,7 +29,7 @@
       <tr>
         <td><li class="active">{{expenseApproved.name}}</li></td>
         <td>
-       <span class="badge">{{ expenseApproved.ammount }}</span>
+       <span class="badge">{{ expenseApproved.amount }}</span>
         </td>
         <td>{{ expenseApproved.approved }}</td>
         <td>{{ expenseApproved.date }}</td>
