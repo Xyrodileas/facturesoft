@@ -236,7 +236,7 @@ def signup(request):
             httpResponse = HttpResponse(template.render(context, request))
             set_cookie(httpResponse, 'username', username)
             set_cookie(httpResponse, 'email', email)
-            set_cookie(httpResponse, 'admin', True)
+            set_cookie(httpResponse, 'admin', isAdmin(request, username))
             return httpResponse
     else:
         form = SignupForm()
@@ -267,7 +267,7 @@ def signin(request):
             context = {'username': username, 'admin': isAdmin(request, username)}
             httpResponse = HttpResponse(template.render(context, request))
             set_cookie(httpResponse, 'username', username)
-            set_cookie(httpResponse, 'admin', True)
+            set_cookie(httpResponse, 'admin', isAdmin(request, username))
             return httpResponse
     else:
         form = SignInForm()
@@ -383,5 +383,5 @@ def approve(request, idExpense):
         context = {'username': username, 'admin': isAdmin(request, username), 'expenseApproved':expense}
         httpResponse = HttpResponse(template.render(context, request))
         set_cookie(httpResponse, 'username', username)
-        set_cookie(httpResponse, 'isAdmin', True)
+        set_cookie(httpResponse, 'isAdmin', 'isAdmin(request, username))
         return httpResponse
