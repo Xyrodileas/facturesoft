@@ -1,0 +1,3 @@
+*.pyc
+Vagrant/FactureSoft/.vagrant/*
+.idea/*

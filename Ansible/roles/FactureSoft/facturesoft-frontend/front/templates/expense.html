@@ -5,21 +5,8 @@
 {% block title %}Expenses{% endblock %}
 
 {% block bootstrap3_extra_head %}
-<link rel="stylesheet" href="{% static 'css/changelog' %}">
 {% endblock %}
-
 {% block content %}
-  <style type="text/css">
-
-        #workstation_search {
-          margin-left:15%;
-          margin-right:50%;
-        }
-
-
-
-    </style>
-
 
 <div class="container">
   <h2>Expense</h2>
@@ -41,7 +28,7 @@
       <tr>
         <td>{% if username != None %}<li class="active"><a href="{% url 'expense' %}/{{ expense.id }}">{{expense.name}}</a></li>{% endif %}</td>
         <td>
-       <span class="badge">{{ expense.ammount }}</span>
+       <span class="badge">{{ expense.amount }}</span>
         </td>
         <td>{{ expense.approved }}</td>
         <td>{{ expense.date }}</td>

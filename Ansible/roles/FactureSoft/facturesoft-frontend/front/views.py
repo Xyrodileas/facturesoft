@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseRedirect
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.template import loader, Context
@@ -17,6 +17,7 @@ from front.models import Expense, User
 import time
 from datetime import datetime, timedelta
 from datetime import date
+import rfc3339
 
 authorized_username="approver"
 authorized_password="12345"
@@ -117,6 +118,7 @@ def isAdmin(request, username):
         return False
     print("Not Admin")
     return False
+
 # main page when you hit /front
 def index(request):
     username = request.COOKIES.get('username') 
@@ -188,7 +190,8 @@ def expense(request, idExpense):
 
 # Page to manage account information, pretty empty right now
 def myAccount(request):
-    username = request.COOKIES.get('username') 
+    username = request.COOKIES.get('username')
+    email = request.COOKIES.get('email')
 
     # If no username, let's GTFO
     if not username:
@@ -207,18 +210,20 @@ def myAccount(request):
 def signup(request):
     class SignupForm(forms.Form):
         username = forms.CharField(label='Enter your name', required=True, max_length=100)
+        email = forms.CharField(max_length=30, required=True, help_text='Optional.')
         password = forms.CharField(label='Password', required=True, max_length=100, widget=forms.PasswordInput())
 
     if request.method == 'POST':
         form = SignupForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
+            email = form.cleaned_data.get('email')
             raw_password = form.cleaned_data.get('password')
             m = hashlib.sha256()
             m.update(raw_password.encode('utf-8'))
             hashedpassword = m.hexdigest()
 
-            user = {"name": username, "password": hashedpassword, 'IsAdmin': False}
+            user = {"name": username, "email": email, "password": hashedpassword, 'IsAdmin': False}
 
             r = requests.post('http://localhost:1323/user', auth=HTTPBasicAuth(authorized_username, authorized_password), json=user)
             jsonResult = r.json()
@@ -227,10 +232,11 @@ def signup(request):
             
             template = loader.get_template('auth_success.html')
 
-            context = {'username': username, 'admin':isAdmin(request, username)}
+            context = {'username': username,'email':email, 'admin':isAdmin(request, username)}
             httpResponse = HttpResponse(template.render(context, request))
             set_cookie(httpResponse, 'username', username)
-            set_cookie(httpResponse, 'admin', True)
+            set_cookie(httpResponse, 'email', email)
+            set_cookie(httpResponse, 'admin', isAdmin(request, username))
             return httpResponse
     else:
         form = SignupForm()
@@ -261,7 +267,7 @@ def signin(request):
             context = {'username': username, 'admin': isAdmin(request, username)}
             httpResponse = HttpResponse(template.render(context, request))
             set_cookie(httpResponse, 'username', username)
-            set_cookie(httpResponse, 'admin', True)
+            set_cookie(httpResponse, 'admin', isAdmin(request, username))
             return httpResponse
     else:
         form = SignInForm()
@@ -280,8 +286,6 @@ def addExpense(request):
         amount = forms.CharField(label='Amount', required=True, max_length=100)
         date = forms.DateField(label='Date', required=True)
 
-    username = request.COOKIES.get('username') 
-
     if request.method == 'POST':
         form = AddExpenseForm(request.POST)
         if form.is_valid():
@@ -289,17 +293,11 @@ def addExpense(request):
             amount = form.cleaned_data.get('amount')
             date = form.cleaned_data.get('date')
             username = request.COOKIES.get('username')
-            #date = str(date.datetime.now())
-            #d = date.now().isoformat("T")
-            #print(d)
             d = date.today()
-            import rfc3339
             returndate = datetime.combine(d, datetime.min.time())
             returndate = (rfc3339.rfc3339(returndate))
             print(returndate)
-            expense = {"user": username , "name": name, "ammount": int(amount), "date":returndate, "approved":False}
-            #expense = {"user": username , "name": name, "ammount": amount, "approved":False}
-            #date = 1511712133
+            expense = {"user": username , "name": name, "amount": int(amount), "date":returndate, "approved":False}
             r = requests.post('http://localhost:1323/user/'+ username + '/expense', auth=HTTPBasicAuth(authorized_username, authorized_password), json=expense)
 
             jsonResult = r.json()
@@ -308,13 +306,47 @@ def addExpense(request):
             template = loader.get_template('home.html')
 
             context = {'username': username, 'admin': isAdmin(request, username)}
-            httpResponse = HttpResponse(template.render(context, request))
-            
+            httpResponse = HttpResponseRedirect('/front',template.render(context, request))
             return httpResponse
     else:
         form = AddExpenseForm()
 
     return render(request, 'add_expense.html', {'form': form})
+
+# Page to modify an expense
+def modifyExpense(request):
+    class AddExpenseForm(forms.Form):
+        name = forms.CharField(label='Name', required=True, max_length=100)
+        amount = forms.CharField(label='Amount', required=True, max_length=100)
+        date = forms.DateField(label='Date', required=True)
+
+    if request.method == 'POST':
+        form = AddExpenseForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data.get('name')
+            amount = form.cleaned_data.get('amount')
+            date = form.cleaned_data.get('date')
+            username = request.COOKIES.get('username')
+            d = date.today()
+            returndate = datetime.combine(d, datetime.min.time())
+            returndate = (rfc3339.rfc3339(returndate))
+            print(returndate)
+            expense = {"user": username , "name": name, "amount": int(amount), "date":returndate, "approved":False}
+            r = requests.post('http://localhost:1323/user/'+ username + '/expense', auth=HTTPBasicAuth(authorized_username, authorized_password), json=expense)
+
+            jsonResult = r.json()
+            print(jsonResult)
+
+            template = loader.get_template('home.html')
+
+            context = {'username': username, 'admin': isAdmin(request, username)}
+            httpResponse = HttpResponseRedirect('/front',template.render(context, request))
+            return httpResponse
+    else:
+        form = AddExpenseForm()
+
+    return render(request, 'add_expense.html', {'form': form})
+
 
 # Page to approve the currently pending expenses (Not approved)
 def approveExpenses(request):
@@ -351,9 +383,5 @@ def approve(request, idExpense):
         context = {'username': username, 'admin': isAdmin(request, username), 'expenseApproved':expense}
         httpResponse = HttpResponse(template.render(context, request))
         set_cookie(httpResponse, 'username', username)
-        set_cookie(httpResponse, 'isAdmin', True)
+        set_cookie(httpResponse, 'isAdmin', 'isAdmin(request, username))
         return httpResponse
-
-
-
-

@@ -17,7 +17,8 @@
 
 {% block bootstrap3_content %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.18.0/vis.min.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.18.0/vis.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.18.0/vis.min.css">
+<link rel="stylesheet" href="{% static 'css/row.css' %}">
 
     <div class="navbar navbar-inverse navbar">
         <div class="container-fluid">
@@ -38,8 +39,8 @@
                   {% if username == None %}<li class="active"><a href="{% url 'signin' %}">Sign-In</a></li>{% endif %}
                   {% if username == None %}<li class="active"><a href="{% url 'signup' %}">Sign-Up</a></li>{% endif %}
                   {% if username != None %}<li class="active"><a href="{% url 'myAccount' %}">My Account</a></li>{% endif %}
-                  {% if username != None %}<li class="active"><a href="{% url 'addExpense' %}">Add Expense</a></li>{% endif %}
-                  {% if admin == True %}<li class="active"><a href="{% url 'approveExpenses' %}">Approve Expenses </a></li>{% endif %}
+                  {% if username != None %}<li class="active"><a href="{% url 'addExpense' %}">Expense Module</a></li>{% endif %}
+                  {% if admin == True %}<li class="active"><a href="{% url 'approveExpenses' %}">Approval Module </a></li>{% endif %}
               </li>
                 </ul>
               </div><!--/.nav-collapse -->
@@ -49,7 +50,7 @@
 
 
         
-    <div class="row">
+    <div id="row" class="row">
 {% block content %}(no content){% endblock %}
     </div>
 

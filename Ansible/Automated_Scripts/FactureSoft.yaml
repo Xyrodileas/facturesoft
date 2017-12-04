@@ -16,6 +16,7 @@
 
     - name: Kill Screen (Just in case)
       command: pkill screen
+      ignore_errors: yes
 
     - name: Create screen backend
       command: screen -dmS backend
@@ -33,4 +34,5 @@
     - name: Start Django Server
       command: screen -S frontend -X stuff "python3 /opt/facturesoft-frontend/manage.py runserver 0.0.0.0:8000\n"
 
-
+    - debug:
+        msg: "You can now open browser at localhost:8000"
