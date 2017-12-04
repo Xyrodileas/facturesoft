@@ -1,13 +1,22 @@
 from django.http import HttpResponse,HttpResponseRedirect
-from django.template import loader
-from django import forms
+from django.http import JsonResponse
 from django.shortcuts import render
+from django.template import loader, Context
+from django.db import connection
+from django import forms
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
 import requests
 from requests.auth import HTTPBasicAuth
 import json
 import datetime
 import hashlib
+import os
+from front.models import Expense, User
+import time
 from datetime import datetime, timedelta
+from datetime import date
 import rfc3339
 
 authorized_username="approver"
@@ -303,6 +312,41 @@ def addExpense(request):
         form = AddExpenseForm()
 
     return render(request, 'add_expense.html', {'form': form})
+
+# Page to modify an expense
+def modifyExpense(request):
+    class AddExpenseForm(forms.Form):
+        name = forms.CharField(label='Name', required=True, max_length=100)
+        amount = forms.CharField(label='Amount', required=True, max_length=100)
+        date = forms.DateField(label='Date', required=True)
+
+    if request.method == 'POST':
+        form = AddExpenseForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data.get('name')
+            amount = form.cleaned_data.get('amount')
+            date = form.cleaned_data.get('date')
+            username = request.COOKIES.get('username')
+            d = date.today()
+            returndate = datetime.combine(d, datetime.min.time())
+            returndate = (rfc3339.rfc3339(returndate))
+            print(returndate)
+            expense = {"user": username , "name": name, "amount": int(amount), "date":returndate, "approved":False}
+            r = requests.post('http://localhost:1323/user/'+ username + '/expense', auth=HTTPBasicAuth(authorized_username, authorized_password), json=expense)
+
+            jsonResult = r.json()
+            print(jsonResult)
+
+            template = loader.get_template('home.html')
+
+            context = {'username': username, 'admin': isAdmin(request, username)}
+            httpResponse = HttpResponseRedirect('/front',template.render(context, request))
+            return httpResponse
+    else:
+        form = AddExpenseForm()
+
+    return render(request, 'add_expense.html', {'form': form})
+
 
 # Page to approve the currently pending expenses (Not approved)
 def approveExpenses(request):
