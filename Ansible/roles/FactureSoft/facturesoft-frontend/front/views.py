@@ -1,22 +1,14 @@
-from django.http import HttpResponse
-from django.http import JsonResponse
-from django.shortcuts import render
-from django.template import loader, Context
-from django.db import connection
+from django.http import HttpResponse,HttpResponseRedirect
+from django.template import loader
 from django import forms
-from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 import requests
 from requests.auth import HTTPBasicAuth
 import json
 import datetime
 import hashlib
-import os
-from front.models import Expense, User
-import time
 from datetime import datetime, timedelta
-from datetime import date
+import rfc3339
 
 authorized_username="approver"
 authorized_password="12345"
@@ -293,7 +285,6 @@ def addExpense(request):
             date = form.cleaned_data.get('date')
             username = request.COOKIES.get('username')
             d = date.today()
-            import rfc3339
             returndate = datetime.combine(d, datetime.min.time())
             returndate = (rfc3339.rfc3339(returndate))
             print(returndate)
@@ -306,8 +297,7 @@ def addExpense(request):
             template = loader.get_template('home.html')
 
             context = {'username': username, 'admin': isAdmin(request, username)}
-            httpResponse = HttpResponse(template.render(context, request))
-            
+            httpResponse = HttpResponseRedirect('/front',template.render(context, request))
             return httpResponse
     else:
         form = AddExpenseForm()
