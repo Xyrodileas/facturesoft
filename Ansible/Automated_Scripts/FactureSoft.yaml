@@ -10,7 +10,7 @@
       setup: #Gather Fact
 
     roles:
-    - ../roles/facturesoft
+    - ../roles/FactureSoft
 
     tasks:
 
